@@ -4,7 +4,9 @@ services:
     env: node
     branch: main
     plan: free
-    buildCommand: "cd server && npm ci"
+    # Some build environments (including Render) require a lockfile for `npm ci`.
+    # Use `npm install` here to avoid failing when package-lock.json is absent.
+    buildCommand: "cd server && npm install"
     startCommand: "cd server && npm start"
     envVars:
       - key: JWT_SECRET

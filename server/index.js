@@ -90,8 +90,18 @@ app.get('/invite/:token', (req, res) => {
   if (!inv) return res.status(404).json({ error: 'invite not found' });
   if (inv.expiresAt && Date.now() > inv.expiresAt) return res.status(410).json({ error: 'expired' });
   const room = rooms[inv.roomId];
-  const participants = Array.from(room.participants).map(sid => ({ socketId: sid }));
-  res.json({ room: { id: room.id, name: room.name, capacity: room.capacity, participants } });
+  const participants = Array.from(room.participants).map(sid => {
+    const peer = io.sockets.sockets.get(sid);
+    return {
+      socketId: sid,
+      username: peer ? peer.data.username : 'Unknown',
+      avatarColor: peer ? peer.data.avatarColor : '#5865f2',
+    };
+  });
+  res.json({
+    invite: { token, expiresAt: inv.expiresAt, permanent: inv.expiresAt === null },
+    room: { id: room.id, name: room.name, capacity: room.capacity, participants },
+  });
 });
 
 const server = http.createServer(app);
@@ -135,8 +145,21 @@ io.on('connection', (socket) => {
       socket.emit('room-full');
       return;
     }
+    const participants = Array.from(room.participants).map(socketId => {
+      const peer = io.sockets.sockets.get(socketId);
+      return {
+        socketId,
+        username: peer ? peer.data.username : 'Unknown',
+        avatarColor: peer ? peer.data.avatarColor : '#5865f2',
+      };
+    });
     socket.join(roomId);
     room.participants.add(socket.id);
+    socket.emit('room-joined', {
+      roomId,
+      room: { id: room.id, name: room.name, capacity: room.capacity },
+      participants,
+    });
     emitRoomUpdate(roomId);
     // notify existing peers to prepare for connection
     socket.to(roomId).emit('peer-joined', { socketId: socket.id, username: socket.data.username, avatarColor: socket.data.avatarColor });

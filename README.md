@@ -41,10 +41,34 @@ Example Netlify `netlify.toml` (optional):
 
 Recommended server hosts: Render, Fly, Railway, or a small VPS; pick one that provides an HTTPS endpoint and supports WebSockets.
 
+Client routing on Netlify
+- The client includes `client/public/_redirects` so deep links like `/invite/<token>` open the React app instead of a 404.
+- Set `VITE_SERVER_URL` to your Render server URL before building the Netlify site.
+
+What the app now supports
+- Guest mode, username/password auth, room creation, join/leave, invite links with 24h or permanent expiry, and WebRTC mesh calling with STUN-only signaling.
+- If the server is deployed on Render, keep the Web service URL in `VITE_SERVER_URL` and make sure the service stays on HTTPS.
+
 Render deployment (server)
 - This repo includes `render.yaml` to deploy the `server` to Render as a web service. The service runs `cd server && npm start` and expects `PORT` to be provided by Render.
 - In Render Dashboard or via `render.yaml`, set the environment variables `JWT_SECRET` and `INVITE_TOKEN_SECRET`.
 - After deployment you'll get a URL like `https://discord-voice-server.onrender.com`. Use that URL as the `VITE_SERVER_URL` value for your Netlify site (see below).
+
+Fixing the `npm ci` build error
+
+- Preferred (recommended): Commit a `package-lock.json` so `npm ci` can run deterministically on Render. Locally:
+
+```bash
+cd server
+npm install
+git add package-lock.json
+git commit -m "Add package-lock.json"
+git push
+```
+
+- Alternative (already applied in `render.yaml`): change Render's build command to use `npm install` instead of `npm ci`. This is less strict but works when no lockfile exists.
+
+Either approach will resolve the `npm ci` error shown in your Render logs.
 
 Netlify + Render example
 - Build and publish the `client` on Netlify. In Netlify's site settings set an Environment Variable `VITE_SERVER_URL` to your Render URL, for example `https://discord-voice-server.onrender.com`.
