@@ -1,0 +1,19 @@
+:root{ --bg:#0f1720; --panel:#0b1220; --muted:#94a3b8; --accent:#5865f2 }
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,Arial;background:var(--bg);color:#e6eef6}
+.app{display:flex;height:100vh}
+.sidebar{width:220px;background:var(--panel);padding:12px}
+.sidebar h2{margin:0 0 8px 0;font-size:14px;color:var(--muted)}
+.sidebar ul{list-style:none;padding:0;margin:0}
+.sidebar li{display:flex;justify-content:space-between;align-items:center;padding:8px;border-radius:6px;cursor:pointer}
+.sidebar li.active{background:rgba(255,255,255,0.03)}
+.count{opacity:0.7;font-size:12px}
+.main{flex:1;display:flex;flex-direction:column}
+.topbar{height:56px;display:flex;align-items:center;justify-content:space-between;padding:8px 16px;background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent)}
+.controls button{margin-left:8px;padding:6px 10px;border-radius:6px;border:none;background:var(--accent);color:white}
+.room{padding:16px}
+.participants{display:flex;flex-wrap:wrap;gap:8px}
+.participant{width:160px;padding:8px;background:rgba(255,255,255,0.02);border-radius:8px;display:flex;align-items:center}
+.avatar{width:40px;height:40px;border-radius:50%;margin-right:8px}
+.speaking{width:10px;height:10px;border-radius:50%;margin-left:auto;background:transparent}
+.speaking.on{box-shadow:0 0 8px 2px rgba(88,101,242,0.8);background:var(--accent)}

@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: discord-voice-server
+    env: node
+    branch: main
+    plan: free
+    buildCommand: "cd server && npm ci"
+    startCommand: "cd server && npm start"
+    envVars:
+      - key: JWT_SECRET
+      - key: INVITE_TOKEN_SECRET
