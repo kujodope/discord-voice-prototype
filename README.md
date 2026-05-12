@@ -53,3 +53,4 @@ Netlify + Render example
 Notes about WebSockets and Render
 - Render fully supports WebSockets; Socket.io will use WebSocket transport when available. No additional configuration is required beyond ensuring the service is a web service with the correct start command.
 
+# discord-voice-prototype
